@@ -1,0 +1,5 @@
+package in.crm.main.entities;
+
+public class Courses {
+
+}

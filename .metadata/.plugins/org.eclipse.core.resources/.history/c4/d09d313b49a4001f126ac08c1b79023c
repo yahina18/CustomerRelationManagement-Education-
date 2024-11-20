@@ -1,0 +1,63 @@
+package in.crm.main.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import in.crm.main.entities.User;
+import in.crm.main.service.UserService;
+
+
+@Controller
+public class UserController {
+
+	@Autowired
+	UserService service;
+	
+	@GetMapping("/index")
+	public String openIndexPage()
+	{
+		return "index";
+	}
+	
+	@GetMapping("/login")
+	public String openLoginPage(Model model)
+	{
+		model.addAttribute("user",new User());
+		return "login";
+	}
+	
+	
+	
+	
+	
+	
+	/* register-start */ 
+	
+	@GetMapping("/register")
+	public String openRegisterPage(Model model)
+	{
+		model.addAttribute("user",new User());
+		return "register";
+	}
+	
+	@PostMapping("/regForm")
+	public String handleRegForm(@ModelAttribute("user") User user, Model model)
+	{
+		boolean status =   service.registerUser(user);
+		if(status)
+		{
+			model.addAttribute("successMsg","Registered Successfully");
+			return "register";
+		}else {
+			model.addAttribute("errorMsg","Registration Failed !!");
+			return "error";
+		}
+		
+	}
+	/* register-end */
+	
+}

@@ -1,0 +1,14 @@
+package in.crm.main.entities;
+
+public class Orders {
+	
+	private Long id;
+	private String courseName;
+	private String courseAmount;
+	private String userEmail;
+	private String dateOfPurchase;
+	private String rzpPaymentId;
+	private Long orderId;
+	
+
+}

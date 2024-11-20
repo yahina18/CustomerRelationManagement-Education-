@@ -1,0 +1,39 @@
+package in.crm.main.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import in.crm.main.entities.User;
+import in.crm.main.repository.UserRepository;
+
+@Service
+public class UserService {
+	
+	@Autowired
+	UserRepository repository;
+	
+	public boolean registerUser(User user)
+	{
+		try {
+			repository.save(user);
+			return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		
+	}
+	
+	public boolean LoginUser(String email , String password)
+	{
+		
+			
+			User user =  repository.findByEmail(email);
+			if(user != null)
+				return user.getPassword().equals(password);
+	}
+	
+
+}
