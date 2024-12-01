@@ -54,14 +54,19 @@
 								<a href="login" class="btn btn-outline-primary">Login to Buy</a>
 							</div>
 							<div th:unless="${sessionUser == null OR sessionUser == ''}">
+							<div th:if="${#lists.contains(purchasedCoursesNameList, course.name)}">
+						    		<span class="text-success">Course already purchased</span>
+						    </div>
+							<div th:unless="${#lists.contains(purchasedCoursesNameList, course.name)}">
 								<button class = "btn btn-primary"
-								 th:data-cname="${course.name}"
+									 th:data-cname="${course.name}"
 						    			th:data-camount="${course.discountPrice}"
 						    			th:data-uname="${sessionUser.name}"
 						    			th:data-uemail="${sessionUser.email}"
 						    			th:data-uphoneno="${sessionUser.phoneNo}"
 						    			 onclick="purchaseCourse(this.getAttribute('data-cname'), this.getAttribute('data-camount'), this.getAttribute('data-uname'), this.getAttribute('data-uemail'), this.getAttribute('data-uphoneno'))">
 								Buy</button>
+							</div>
 							</div>	
 						</div>
 						<div class="card-footer text-body-secondary"><span th:text="${course.updateOn}"></span></div>
@@ -99,12 +104,15 @@
                     console.log(response);
                     alert("Payment Successful");
                     
+                    var date = new Date();
+                    var dateOfPurchase = date.toLocaleDateString('en-GB')+", "+date.toLocaleTimeString('en-GB', {hour12: true});
+                    
                     var requestData = {
                     		
                     		courseName : courseName,
                     		courseAmount : courseAmount,
                     		userEmail : uemail,
-                    		dateOfPurchase : new Date().toLocaleString(),
+                    		dateOfPurchase : dateOfPurchase,
                     		rzpPaymentId : response.razorpay_payment_id    		
                     };
                     

@@ -29,7 +29,7 @@ public class Orders {
 	private String rzpPaymentId;
 	
 	@Column
-	private Long orderId;
+	private String orderId;
 
 	public Long getId() {
 		return id;
@@ -79,11 +79,11 @@ public class Orders {
 		this.rzpPaymentId = rzpPaymentId;
 	}
 
-	public Long getOrderId() {
+	public String getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(Long orderId) {
+	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 	

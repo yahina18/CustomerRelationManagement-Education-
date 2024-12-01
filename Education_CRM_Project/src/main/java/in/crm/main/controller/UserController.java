@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -34,13 +35,29 @@ public class UserController {
 	CourseService courseService;
 	
 	@Autowired
+	OrdersRepository ordersRepository;
+	@Autowired
 	UserRepository userRepository;
 
 	@GetMapping({"/","/index"})
-	public String openIndexPage(Model model) {
+	public String openIndexPage(Model model, @SessionAttribute(name ="sessionUser",required = false ) User sessionUser ) {
 		
 		List<Courses> course = courseService.getAllCourses();
 		model.addAttribute("courseList", course);
+		
+		if(sessionUser != null)
+		{
+            List<Object[]> purchasedCourseList = ordersRepository.findPurchasedCoursesByEmail(sessionUser.getEmail());
+			
+			List<String> purchasedCoursesNameList = new ArrayList<>();
+			for(Object[] courses : purchasedCourseList)
+			{
+				String courseName = (String) courses[3];
+				purchasedCoursesNameList.add(courseName);
+			}
+			
+			model.addAttribute("purchasedCoursesNameList", purchasedCoursesNameList);
+		}
 		return "index";
 	}
 
@@ -51,22 +68,27 @@ public class UserController {
 	}
 
 	@PostMapping("/loginForm")
-	public String handleLoginForm(@ModelAttribute("user") User user, Model model) {
-		boolean isAuthenticate = service.LoginUser(user.getEmail(), user.getPassword());
-		if (isAuthenticate) {
+	public String handleLoginForm(@ModelAttribute("user") User user, Model model)
+	{
+		boolean isAuthenticated = service.LoginUser(user.getEmail(), user.getPassword());
+		if(isAuthenticated)
+		{
+			User authenticatedUser = userRepository.findByEmail(user.getEmail());
 			
-			User authenticateUser = userRepository.findByEmail(user.getEmail());
-			model.addAttribute("sessionUser",authenticateUser);
+			if(authenticatedUser.isBanStatus())
+			{
+				model.addAttribute("errorMsg", "Sorry, your account is banned, please contact admin, thank you...!!");
+				return "login";
+			}
+			model.addAttribute("sessionUser", authenticatedUser);
+			
 			return "user-profile";
-			
 		}
-			
-		else {
-			model.addAttribute("errorMsg", "Incorret Email or Password !!");
+		else
+		{
+			model.addAttribute("errorMsg", "Incorrect Email id or Password");
 			return "login";
-
 		}
-
 	}
 
 	/* register-start */
@@ -128,6 +150,8 @@ public class UserController {
 	    	 purchasedList.add(purchaseCourse);
 	    	 
 	     }
+	     
+	     System.out.println("Courses List : "+purchasedList);
 	     model.addAttribute("purchasedCoursesList", purchasedList);
 	     
 		return "mycourse";

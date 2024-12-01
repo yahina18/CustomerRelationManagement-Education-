@@ -30,17 +30,17 @@
 					<div class="card" style="width: 18rem;">
 						<img th:src="@{${course.imageUrl}}" class="card-img-top" alt="...">
 						<div class="card-body">
-							<h5 class="card-title"><span th:text = "${course.name}"></span></h5>
+							<h5 class="card-title"><span th:text = "${course.courseName}"></span></h5>
 							<p class="card-text"><span th:text = "${course.description}"></span> </p>
 						</div>
 						<div>
 								<button class="btn btn-outline-success">Start Course</button>
 							</div>
 						<div class="card-footer text-body-secondary">
-							Updated : <span th:text="${purchasedCourse.updatedOn}"></span>
+							Updated : <span th:text="${course.updatedOn}"></span>
 						</div>
 						<div class="card-footer text-body-secondary">
-							<small> Purchased On : <br/><strong><span th:text="${purchasedCourse.purchasedOn}"></span></strong> </small>
+							<small> Purchased On : <br/><strong><span th:text="${course.purchasedOn}"></span></strong> </small>
 						</div>
 					</div>
 				</div>
